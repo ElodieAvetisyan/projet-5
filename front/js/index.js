@@ -1,21 +1,32 @@
-let kanapData = [];
+let productData = [];
 
 //creation d'une promesse pour connecter à l'API
-const fetchKanap = async () => {
+const fetchProduct = async () => {
     await fetch ("http://localhost:3000/api/products")
     .then((res) => res.json())
     .then((promise) => {
-        kanapData = promise;
-        console.log(kanapData);
+        productData = promise;
+        console.log(productData);
     });
 };
 
 //fonction qui va nous permettre d'afficher les produits sur la page
-const kanapDisplay = async () => {
-    await fetchKanap();
-}
+const productDisplay = async () => {
+    await fetchProduct();
 
-kanapDisplay();
+    document.getElementById("items").innerHTML = productData.map(
+        (product) => `
+        <div id="items${product._id}" class="items article">
+        <h3 class="items article h3">${product.name}</h3>
+        <img class="items article img" src="${product.imageUrl}" alt="image du canapé ${product.name}"/>
+        <p class="items article p">${product.description}</p>
+
+        </div>
+        `,
+    );
+};
+
+productDisplay();
 
 
 
