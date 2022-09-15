@@ -3,7 +3,7 @@ let productData = [];
 //creation d'une promesse pour connecter à l'API
 const fetchProduct = async () => {
     await fetch ("http://localhost:3000/api/products")
-    .then((res) => res.json())
+    .then((response) => response.json())
     .then((promise) => {
         productData = promise;
         console.log(productData);
@@ -16,11 +16,14 @@ const productDisplay = async () => {
 
     document.getElementById("items").innerHTML = productData.map(
         (product) => `
-        <div id="items${product._id}" class="items article">
-        <h3 class="items article h3">${product.name}</h3>
-        <img class="items article img" src="${product.imageUrl}" alt="image du canapé ${product.name}"/>
-        <p class="items article p">${product.description}</p>
-
+        <div id="items${product._id}" class="items">
+            <a>
+                <article>
+                    <img src="${product.imageUrl}" alt="image du canapé ${product.name}"/>
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                </article>
+            </a>
         </div>
         `,
     );
