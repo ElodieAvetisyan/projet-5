@@ -26,7 +26,7 @@ const productDisplay = async () => {
             </a>
         </div>
         `,
-    );
+    ).join("");
 };
 
 productDisplay();
