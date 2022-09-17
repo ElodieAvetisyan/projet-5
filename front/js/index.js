@@ -26,7 +26,7 @@ const productDisplay = async () => {
             </a>
         </div>
         `,
-    ).join("");
+    ).join(""); //le "join" supprime les virgule entre chaque produit
 };
 
 productDisplay();
