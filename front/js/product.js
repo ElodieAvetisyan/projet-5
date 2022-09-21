@@ -1,35 +1,33 @@
     // redirigons la page des produits à chaque produit respectif avec l'ID
-    const produit = (window.location.href).searchParams.get("id"); // recupéré l'Id via le lien URL 
-        console.log(produit);
-
+    const product = window.location.search;
+    console.log(product);
 
     //affichage du produit selectionné grace à l'ID
-    let produitData = [];
+    let productData = [];
 
-    const fetchProduit = async () => {
-        await fetch (`http://localhost:3000/api/products/${produit}`)
+    const fetchProduct = async () => {
+        await fetch (`http://localhost:3000/api/products/${product}`)
             .then((response) => response.json())
             .then((promise) => {
             console.log(promise);       
             })
         };
 
-    const produitDisplay = async() => {
-        await fetchProduit();
+    const productDisplay = async() => {
+        await fetchProduct();
 
-        document.getElementById("items").innerHTML = productData.map(
+        document.getElementByclass("item").innerHTML = productData.map(
             (product) => `
-            <div id="items${product._id}" class="items">
+            <div class="item"${item}>
                     <article>
-                        <img src="${product.imageUrl}" alt="image du canapé ${product.name}"/>
-                        <h1>${product.name}</h1>
-                        <p>${product.price}</p>
-                        <p>${product.description}</p>
+                        <img src="${item__img}}" alt="image du canapé"/>
+                        <h1>${title}</h1>
+                        <p>${price}</p>
+                        <p>${description}</p>
                     </article>
-            </div>
-            `,
+            </div> `,
         );
     };
 
-    produitDisplay();
+    productDisplay();
 

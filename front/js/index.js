@@ -17,9 +17,9 @@ const productDisplay = async () => {
     document.getElementById("items").innerHTML = productData.map(
         (product) => `
         <div id="items${product._id}" class="items">
-            <a>
+            <a href="./product.html?${product._id}>
                 <article>
-                    <img src="${product.imageUrl}" alt="image du canapé ${product.name}"/>
+                    <img src="${product.imageUrl}" alt="image du canapé"/>
                     <h3>${product.name}</h3>
                     <p>${product.description}</p>
                 </article>
