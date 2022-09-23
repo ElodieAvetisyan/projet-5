@@ -1,39 +1,52 @@
-let productData = [];
+//j'assigne le tableau des élements à une constante
+const productsList = document.getElementById("items");
 
-//creation d'une promesse pour connecter à l'API
-const fetchProduct = async () => {
-    await fetch ("http://localhost:3000/api/products")
+//j'appelle l'API grace à fetch
+
+fetch ("http://localhost:3000/api/products")
     .then((response) => response.json())
-    .then((promise) => {
-        productData = promise;
-        console.log(productData);
-    });
-};
+    .then((response) => displayProducts(response))
+     
 
-//fonction qui va nous permettre d'afficher les produits sur la page
-const productDisplay = async () => {
-    await fetchProduct();
+    function displayProducts(products){
 
-    document.getElementById("items").innerHTML = productData.map(
-        (product) => `
-        <div id="items${product._id}" class="items">
-            <a href="./product.html?${product._id}">
-                <article>
-                    <img src="${product.imageUrl}" alt="image du canapé"/>
-                    <h3>${product.name}</h3>
-                    <p>${product.description}</p>
-                </article>
-            </a>
-        </div>
-        `,
-    ).join(""); //le "join" supprime les virgule entre chaque produit
-};
+        //je crée une boucle
+        console.log(products);
+        for (let i = 0; i < products.length; i++) {
+      
+            //on attribut le lien à chaque id
+            let productLink = document.createElement("a");
+            productLink.setAttribute("href",`product.html?id=${products[i]._id}`);
 
-productDisplay();
+            //je créee la variable article et je la declare comme child de productlink
+            let productArticle = document.createElement("article");
+
+            //je crée la variable img et je la declare comme child de productArticle
+            let productImg = document.createElement("img");
+            productImg.setAttribute("src", products[i].imageUrl);
+            productImg.setAttribute("alt", products[i].altTxt);
+            productArticle.appendChild(productImg);
+          
+
+            //je crée la variable 'h3' et je le declare child de productArticle
+            let productName = document.createElement("h3");
+            productName.classList.add("productName");
+            productName.textContent = products[i].name;
+            productArticle.appendChild(productName);
+
+            //je crée la variable description et je le declare child de productArticle
+            let productDescription = document.createElement("p");
+            productDescription.classList.add("productDescription");
+            productDescription.textContent = products[i].description;
+            productArticle.appendChild(productDescription);
 
 
+            productLink.appendChild(productArticle);
+            console.log(productLink);
+            productsList.appendChild(productLink);
 
-
+        }
+    };
 
 
 

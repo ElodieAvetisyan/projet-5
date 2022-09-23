@@ -1,29 +1,35 @@
-    // redirigons la page des produits à chaque produit respectif avec l'ID
-    let productData = [];
+function getParam (param){
+    let queryURL = new URL(window.location.href);
+    return queryURL.searchParams.get(param);
+    };
     
-    const product1 = window.location.search.substring(1);
-    //console.log(product);
+    const urlRequest = 'http://localhost:3000/api/products';
+                  
+    async function getProduct(){
+        const response = await fetch(urlRequest + '/' + getParam('id'));
+        const data = await response.json();
+    
+    // console.log(data);
+    const newImg = document.createElement('img');
+    newImg.src = data.imageUrl;
+    newImg.alt = data.altTxt;
 
-    let api_url = "http://localhost:3000/api/products/"+product1;
-
-    const fetchProduct = async () => {
-        await fetch (api_url)
-        .then((response) => response.json())
-        .then((promise) => {
-            productData = promise;
-            console.log(productData);
-        });
-    };
-
-    const productDisplay = async() => {
-        await fetchProduct();
-        document.getElementsByClassName("item")[0].innerHTML = 
-        '<a href="./product.html'+productData['_id']
-        +'"><article><img width="200px" src="'
-        +productData['imageUrl']+'" alt="image du canapé"/><h1>' +productData['name']+'</h1><p>'
-        +productData['description'] +'</p><p>'+productData['price']+'</p></article></a></div>';
-    };
-
-    productDisplay();
+    // On récupère les elements pour injecter les infos du produit
+    document.getElementsByClassName('item__img')[0].appendChild(newImg);
+    document.getElementById('title').innerText = data.name;
+    document.getElementById('price').innerText = data.price;
+    document.getElementById('description').innerText = data.description;
 
 
+
+    const arrColors = data.colors;
+    
+    arrColors.forEach(element => {
+    const color = document.createElement('option');
+    color.value = element;
+    color.innerText = element;
+    document.getElementById('colors').appendChild(color);
+    });
+    }
+    
+    getProduct();
