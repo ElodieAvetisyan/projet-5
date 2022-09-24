@@ -5,31 +5,40 @@ function getParam (param){
     
     const urlRequest = 'http://localhost:3000/api/products';
                   
-    async function getProduct(){
+    async function showProduct(){
+
         const response = await fetch(urlRequest + '/' + getParam('id'));
         const data = await response.json();
     
-    // console.log(data);
-    const newImg = document.createElement('img');
-    newImg.src = data.imageUrl;
-    newImg.alt = data.altTxt;
-
-    // On récupère les elements pour injecter les infos du produit
-    document.getElementsByClassName('item__img')[0].appendChild(newImg);
-    document.getElementById('title').innerText = data.name;
-    document.getElementById('price').innerText = data.price;
-    document.getElementById('description').innerText = data.description;
-
-
-
-    const arrColors = data.colors;
+    //insertion img
+        let newImg = document.createElement('img');
+        newImg.setAttribute('src', data.imageUrl);
+        newImg.setAttribute('alt', data.altTxt);
+        document.getElementsByClassName('item__img')[0].appendChild(newImg);
     
-    arrColors.forEach(element => {
-    const color = document.createElement('option');
-    color.value = element;
-    color.innerText = element;
-    document.getElementById('colors').appendChild(color);
-    });
+     // insertion du nom
+        let titleH1 = document.querySelector('#title');
+        titleH1.textContent = data.name;
+
+    // Insertion du prix
+        let priceItem = document.querySelector('#price');
+        priceItem.textContent = data.price;
+
+     // Insertion de la description
+        let contentItem = document.querySelector('#description');
+        contentItem.textContent = data.description;
+
+    //Insertion choix couleur
+        let colors = data.colors;
+        let colorsItem = document.querySelector('#colors');
+
+        for (let i = 0; i < colors.length; i++) {
+        let color = colors[i];
+        let optionColors = document.createElement('option');
+        optionColors.setAttribute('value', data.colors);
+        optionColors.textContent = color;
+        colorsItem.appendChild(optionColors);
+        };
     }
     
-    getProduct();
+    showProduct();
