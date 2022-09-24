@@ -10,11 +10,15 @@ function getParam (param){
         const response = await fetch(urlRequest + '/' + getParam('id'));
         const data = await response.json();
     
+    //insertion titre dans Url 
+        document.title = data.name;
+
     //insertion img
+        let itemImg = document.querySelector('.item__img');
         let newImg = document.createElement('img');
         newImg.setAttribute('src', data.imageUrl);
         newImg.setAttribute('alt', data.altTxt);
-        document.getElementsByClassName('item__img')[0].appendChild(newImg);
+        itemImg.appendChild(newImg);
     
      // insertion du nom
         let titleH1 = document.querySelector('#title');
