@@ -26,6 +26,9 @@ function showProduct(){
 
             //let ProductBasket = [];
 
+
+            let totalPrice = 0;
+
     for(let i=0; i<productInStorage.length; i++){
         //on feetch le produit exact
         fetch(`http://localhost:3000/api/products/${(productInStorage[i].id)}`)
@@ -36,23 +39,45 @@ function showProduct(){
 
                     //affichage des produits dans le panier//
 
-              let itemProduct = document.createElement('id');
-              itemProduct.setAttribute("id", "cart__items");
+              let itemArticle = document.createElement("article");
+              sectionProduct.appendChild(itemArticle);
+              itemArticle.className = "cart__item";
+
+              let itemId = document.createElement("data-id");
+              itemId.setAttribute("data-id", "{product-ID}");
+              itemArticle.appendChild(itemId);
+             
+              let itemColor = document.createElement("data-color");
+              itemColor.setAttribute( "data-color","{product-color}");
+              itemArticle.appendChild(itemColor);
 
               let newDivImg = document.createElement('div');
               newDivImg.setAttribute("class", "cart__item__img");
-              itemProduct.appendChild(newDivImg);
-                  
+              itemArticle.appendChild(newDivImg);
+
+              let showImg = document.createElement('img');
+              showImg.setAttribute('src', promiseProduct.imageUrl);
+              showImg.setAttribute('alt', promiseProduct.altTxt);
+              newDivImg.appendChild(showImg);
+
               let newDivContent = document.createElement('div');
                newDivContent.setAttribute("class", "cart__item__content");
-               newDivImg.appendChild(newDivContent); 
+               itemArticle.appendChild(newDivContent); 
 
               let newDivContentDescription = document.createElement('div');
                newDivContentDescription.setAttribute("class", "cart__item__content__description" );
                newDivContent.appendChild(newDivContentDescription);
 
+              let newParagrapheName = document.createElement('h2');
+              newParagrapheName.textContent = promiseProduct.name;
+              newDivContentDescription.appendChild(newParagrapheName);
+
+              let newParagrapheColor = document.createElement('p');
+               newParagrapheColor.textContent = ("Color : " + promiseProduct.colors[i]);
+               newDivContentDescription.appendChild(newParagrapheColor);
+
               let newParagraphePrice = document.createElement('p');
-               newParagraphePrice.textContent = "Price : ";
+               newParagraphePrice.textContent = ("Price : " + promiseProduct.price + "€");
                newDivContentDescription.appendChild(newParagraphePrice);
 
               let newDivSetting = document.createElement('div');
@@ -60,7 +85,7 @@ function showProduct(){
                newDivContent.appendChild(newDivSetting);
 
 
-               // on ajoute les quantité et le texte 
+            // on ajoute les quantités et le texte 
 
                let newDivQuantity = document.createElement('div');
                newDivQuantity.setAttribute("class", "cart__item__content__settings__quantity");
@@ -91,18 +116,28 @@ function showProduct(){
               newDivDelete.appendChild(newParagrapheDelete);
               newParagrapheDelete.textContent= "supprimer";
 
-            ////AFFICHAGE DU PRIX TOTAL///
 
-            totalPrice = productInStorage[i].quantity * promiseProduct.price;
-            let totalPriceItem = document.getElementById("totalPrice");
+            
+  ////AFFICHAGE DU PRIX TOTAL///
+
+
+            
+            totalPrice += productInStorage[i].quantity * promiseProduct.price;
+            console.log("prix = " + totalPrice);
+            
+            let totalPriceItem = document.querySelector("#totalPrice");
             totalPriceItem.textContent = totalPrice;
             console.log('total', productInStorage[i].quantity * promiseProduct.price);
-
-
-            })
-                console.log('Nombre de produits dans le LS :  ', productInStorage.length);
+            });
+            
+            console.log('Nombre de produits dans le LS :  ', productInStorage.length);
+          
+               
         }
     }
 }
 
+
+
 showProduct();
+

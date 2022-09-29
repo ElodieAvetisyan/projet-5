@@ -75,7 +75,6 @@ function getParam (param){
          //creation du produit choisit
          let choiceProduct = {
               id:getParam('id'),
-              name:document.title,
               color:valueColor,
               quantity: Number(valueQuantity),
          };
