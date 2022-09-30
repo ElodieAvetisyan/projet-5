@@ -62,6 +62,7 @@ function getParam (param){
      
  let valueColor = document.querySelector('#colors').value; //on récupère la couleur qui à été choisit
  let valueQuantity = document.querySelector('#quantity').value;//on récupère la quantité
+ let valuePrice = document.querySelector('#price').textContent;//on recupere le prix
      
  // creation de l'alerte si le choix est defini ou non
  if (valueColor == '') {
@@ -77,6 +78,7 @@ function getParam (param){
               id:getParam('id'),
               color:valueColor,
               quantity: Number(valueQuantity),
+              price: Number(valuePrice),
          };
 
  if(productInStorage){

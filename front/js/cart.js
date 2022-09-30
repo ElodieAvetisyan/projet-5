@@ -3,11 +3,10 @@
 let productInStorage = JSON.parse(localStorage.getItem("basket"));
 console.log('produits récupéré depuis le LS =>', productInStorage);
 
-///on affiche les produits dans le selecteurs
+
+//*************************on récupere les produits//**************************************
 
 const sectionProduct = document.querySelector('#cart__items');
-
-//on récupere les produits//
 
 function showProduct(){
     if (productInStorage === null || productInStorage ==0) {
@@ -24,18 +23,14 @@ function showProduct(){
     }else{ //si le panier contient un produit on l'affiche
         console.log('le panier n est plus vide');
 
-            //let ProductBasket = [];
-
-
-            let totalPrice = 0;
-
+         
     for(let i=0; i<productInStorage.length; i++){
         //on feetch le produit exact
         fetch(`http://localhost:3000/api/products/${(productInStorage[i].id)}`)
             .then ((response) => response.json())
-            .then ((promiseProduct) =>{
+            .then ((Product) =>{
 
-       console.log('on récupere le produit =>', promiseProduct);
+              console.log('on récupere le produit =>', Product);
 
                     //affichage des produits dans le panier//
 
@@ -56,8 +51,8 @@ function showProduct(){
               itemArticle.appendChild(newDivImg);
 
               let showImg = document.createElement('img');
-              showImg.setAttribute('src', promiseProduct.imageUrl);
-              showImg.setAttribute('alt', promiseProduct.altTxt);
+              showImg.setAttribute('src', Product.imageUrl);
+              showImg.setAttribute('alt', Product.altTxt);
               newDivImg.appendChild(showImg);
 
               let newDivContent = document.createElement('div');
@@ -69,15 +64,15 @@ function showProduct(){
                newDivContent.appendChild(newDivContentDescription);
 
               let newParagrapheName = document.createElement('h2');
-              newParagrapheName.textContent = promiseProduct.name;
+              newParagrapheName.textContent = Product.name;
               newDivContentDescription.appendChild(newParagrapheName);
 
               let newParagrapheColor = document.createElement('p');
-               newParagrapheColor.textContent = ("Color : " + promiseProduct.colors[i]);
+               newParagrapheColor.textContent = ("Color : " + Product.colors[i]);
                newDivContentDescription.appendChild(newParagrapheColor);
 
               let newParagraphePrice = document.createElement('p');
-               newParagraphePrice.textContent = ("Price : " + promiseProduct.price + "€");
+               newParagraphePrice.textContent = ("Price : " + Product.price + "€");
                newDivContentDescription.appendChild(newParagraphePrice);
 
               let newDivSetting = document.createElement('div');
@@ -95,7 +90,7 @@ function showProduct(){
                newParagrapheQuantity.textContent = "Qté : ";
                newDivQuantity.appendChild(newParagrapheQuantity);
                
-               //on ajoute les input
+            //on ajoute les input
 
               let newInput = document.createElement('input');
               newInput.setAttribute("type", "number");
@@ -106,7 +101,7 @@ function showProduct(){
               newInput.setAttribute("value", `${productInStorage[i].quantity}`);
               newDivQuantity.appendChild(newInput);
 
-              //supprimer un produit
+            //supprimer un produit
               let newDivDelete = document.createElement('div');
               newDivDelete.setAttribute("class", "cart__item__content__settings__delete");
               newDivSetting.appendChild(newDivDelete);
@@ -116,28 +111,106 @@ function showProduct(){
               newDivDelete.appendChild(newParagrapheDelete);
               newParagrapheDelete.textContent= "supprimer";
 
+             addDeleteEventListener (newParagrapheDelete, productInStorage[i]);
 
-            
-  ////AFFICHAGE DU PRIX TOTAL///
-
-
-            
-            totalPrice += productInStorage[i].quantity * promiseProduct.price;
-            console.log("prix = " + totalPrice);
-            
-            let totalPriceItem = document.querySelector("#totalPrice");
-            totalPriceItem.textContent = totalPrice;
-            console.log('total', productInStorage[i].quantity * promiseProduct.price);
             });
-            
-            console.log('Nombre de produits dans le LS :  ', productInStorage.length);
           
                
         }
     }
 }
 
-
-
 showProduct();
 
+
+//***************fonction pour changer la quantité************************************************//
+
+let basket =[];
+let quantity_error = document.createElement("span");
+
+function changeInput() {
+    
+  let input_qty = document.querySelectorAll(".cart__item");
+  input_qty.forEach((input_qty) => {
+    input_qty.addEventListener("change", (e) => {
+
+      let article = input_qty.closest("article");
+      let data_id = article.getAttribute("data-id");
+      let data_color = article.getAttribute("data-color");
+
+      for (let i = 0; i < productInStorage.length; i++) {
+        if (productInStorage[i].id === data_id && productInStorage[i].color === data_color) {
+          if (e.target.value > 100) {
+            e.target.value = 100;
+            productInStorage[i].quantity = 100;
+            localStorage.setItem("basket", JSON.stringify(basket));
+          } else if (e.target.value < 1) {
+            e.target.value = 1;
+            productInStorage[i].quantity = 1;
+            localStorage.setItem("basket", JSON.stringify(basket));
+          } else {
+            productInStorage[i].quantity = parseInt(e.target.value);
+            localStorage.setItem("basket", JSON.stringify(basket));
+          }
+        }
+      }
+    });
+  });
+}
+
+changeInput();
+
+//*****************************fonction pour supprimer le produit du panier et du LS*****************************//
+function addDeleteEventListener (newParagrapheDelete, curentProduct)
+{
+
+    newParagrapheDelete.addEventListener("click", (event) => 
+    {
+        event.preventDefault();
+        console.log(event);
+
+        //on selectionne l'id du produit à supprimer
+        let idDeleteItem = curentProduct.id;
+        let colorDeleteItem = curentProduct.colors;
+        console.log(idDeleteItem);
+        console.log(colorDeleteItem);
+
+        //je filtre les elements à garder et ce ou le click supprimer à été fait
+        productInStorage = productInStorage.filter(el => el.id !== idDeleteItem || el.colors !== colorDeleteItem)
+        localStorage.setItem('basket', JSON.stringify(productInStorage));
+
+        // je supprime le produit du DOM
+        event.target.closest('article').remove();
+        alert("le produit à bien été supprimer du panier !");
+        showProduct();
+        showFinalPrice();
+
+    });
+ };
+
+
+
+//******************************************AFFICHAGE DU PRIX TOTAL*************************************************//
+    
+  let totalPrice = 0;
+
+
+  function showFinalPrice()
+  {
+    for(let i=0; i<productInStorage.length; i++)
+    {
+
+                totalPrice += productInStorage[i].quantity * productInStorage[i].price;
+                console.log("prix = " + totalPrice);
+                
+                let totalPriceItem = document.querySelector("#totalPrice");
+                totalPriceItem.textContent = totalPrice;
+                console.log('total', productInStorage[i].quantity * productInStorage[i].price);
+
+
+         console.log('Nombre de produits dans le LS :  ', productInStorage.length);
+
+    }
+  };
+
+  showFinalPrice();
