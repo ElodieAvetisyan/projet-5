@@ -9,7 +9,8 @@ console.log('produits récupéré depuis le LS =>', productInStorage);
 const sectionProduct = document.querySelector('#cart__items');
 
 function showProduct(){
-    if (productInStorage === null || productInStorage ==0) {
+    if (productInStorage === null || productInStorage ==0) 
+    {
 
         //si le panier est vide alors on l'affiche dans le DOM
         const emptyBasket = document.createElement("div");
@@ -20,15 +21,18 @@ function showProduct(){
         emptyBasketText.textContent = "le panier est vide";
         emptyBasket.appendChild(emptyBasketText);
 
-    }else{ //si le panier contient un produit on l'affiche
+    }else
+    { //si le panier contient un produit on l'affiche
         console.log('le panier n est plus vide');
 
          
-    for(let i=0; i<productInStorage.length; i++){
+        for(let i=0; i<productInStorage.length; i++)
+        {
         //on feetch le produit exact
         fetch(`http://localhost:3000/api/products/${(productInStorage[i].id)}`)
             .then ((response) => response.json())
-            .then ((Product) =>{
+            .then ((Product) =>
+            {
 
               console.log('on récupere le produit =>', Product);
 
@@ -96,7 +100,9 @@ function showProduct(){
               newInput.setAttribute("type", "number");
               newInput.setAttribute("class", "itemQuantity");
               newInput.setAttribute("name", "itemQuantity");
+              newInput.setAttribute("id", productInStorage[i].id);
               newInput.setAttribute("min", "1");
+              newInput.setAttribute("onchange", "modifyQte()");
               newInput.setAttribute("max","100");
               newInput.setAttribute("value", `${productInStorage[i].quantity}`);
               newDivQuantity.appendChild(newInput);
@@ -125,40 +131,22 @@ showProduct();
 
 //***************fonction pour changer la quantité************************************************//
 
-let basket =[];
-let quantity_error = document.createElement("span");
+function modifyQte()
+{
+  let tPrice=0;
+  
+  for(let i=0; i<productInStorage.length; i++)
+    {
 
-function changeInput() {
-    
-  let input_qty = document.querySelectorAll(".cart__item");
-  input_qty.forEach((input_qty) => {
-    input_qty.addEventListener("change", (e) => {
+        var qteModif = document.getElementById(productInStorage[i].id).value;
+        tPrice += qteModif * productInStorage[i].price;
+        let totalPriceItem = document.querySelector("#totalPrice");
+        totalPriceItem.textContent = tPrice;  
 
-      let article = input_qty.closest("article");
-      let data_id = article.getAttribute("data-id");
-      let data_color = article.getAttribute("data-color");
-
-      for (let i = 0; i < productInStorage.length; i++) {
-        if (productInStorage[i].id === data_id && productInStorage[i].color === data_color) {
-          if (e.target.value > 100) {
-            e.target.value = 100;
-            productInStorage[i].quantity = 100;
-            localStorage.setItem("basket", JSON.stringify(basket));
-          } else if (e.target.value < 1) {
-            e.target.value = 1;
-            productInStorage[i].quantity = 1;
-            localStorage.setItem("basket", JSON.stringify(basket));
-          } else {
-            productInStorage[i].quantity = parseInt(e.target.value);
-            localStorage.setItem("basket", JSON.stringify(basket));
-          }
-        }
-      }
-    });
-  });
+    }
 }
 
-changeInput();
+
 
 //*****************************fonction pour supprimer le produit du panier et du LS*****************************//
 function addDeleteEventListener (newParagrapheDelete, curentProduct)
@@ -214,3 +202,5 @@ function addDeleteEventListener (newParagrapheDelete, curentProduct)
   };
 
   showFinalPrice();
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
