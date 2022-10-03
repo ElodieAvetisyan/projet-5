@@ -64,10 +64,10 @@ function getParam (param)
  //on ajoute le produit au panier après le click
  btnAddProduct.addEventListener('click', () =>
   {
-     
- let valueColor = document.querySelector('#colors').value; //on récupère la couleur qui à été choisit
- let valueQuantity = document.querySelector('#quantity').value;//on récupère la quantité
- let valuePrice = document.querySelector('#price').textContent;//on recupere le prix
+ 
+        let valueColor = document.querySelector('#colors').selectedOptions[0].text;// on recupere la couleur choisit
+        let valueQuantity = document.querySelector('#quantity').value;//on récupère la quantité
+        let valuePrice = document.querySelector('#price').textContent;//on recupere le prix
      
  // creation de l'alerte si le choix est defini ou non
         if (valueColor == '') 
