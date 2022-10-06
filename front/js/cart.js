@@ -140,7 +140,7 @@ function addChangeEventListener(newInput, curentProduct)
 {
 
     let idChangeItem = curentProduct.id;
-    let colorChangeItem = curentProduct.colors;
+    let colorChangeItem = curentProduct.color;
     console.log(idChangeItem);
     console.log(colorChangeItem);
 
@@ -180,22 +180,23 @@ function addDeleteEventListener (newParagrapheDelete, curentProduct)
     {
         event.preventDefault();
         console.log(event);
-
+        console.log(curentProduct);
         //on selectionne l'id du produit à supprimer
         let idDeleteItem = curentProduct.id;
-        let colorDeleteItem = curentProduct.colors;
+        let colorDeleteItem = curentProduct.color;
         console.log(idDeleteItem);
         console.log(colorDeleteItem);
 
         //je filtre les elements à garder et ce ou le click supprimer à été fait
-        productInStorage = productInStorage.filter(el => el.id !== idDeleteItem || el.colors !== colorDeleteItem)
+        productInStorage = productInStorage.filter(el => el.id !== idDeleteItem || el.color !== colorDeleteItem)
         localStorage.setItem('basket', JSON.stringify(productInStorage));
 
         // je supprime le produit du DOM
         event.target.closest('article').remove();
         alert("le produit à bien été supprimer du panier !");
-        showProduct();
         showFinalPrice();
+
+
 
     });
  };
@@ -204,28 +205,30 @@ function addDeleteEventListener (newParagrapheDelete, curentProduct)
 
 //******************************************AFFICHAGE DU PRIX TOTAL*************************************************//
     
-
-
   function showFinalPrice()
   {
         let totalPrice = 0;
+        let totalPriceItem = document.querySelector("#totalPrice");
 
-        for(let i=0; i<productInStorage.length; i++)
+        if( productInStorage.length > 0)
         {
+            for(let i=0; i<productInStorage.length; i++)
+            {
+                totalPrice += productInStorage[i].quantity * productInStorage[i].price;
+                console.log("prix = " + totalPrice);
 
-            totalPrice += productInStorage[i].quantity * productInStorage[i].price;
-            console.log("prix = " + totalPrice);
-            
-            let totalPriceItem = document.querySelector("#totalPrice");
-            totalPriceItem.textContent = totalPrice;
-            console.log('total', productInStorage[i].quantity * productInStorage[i].price);
-
-
-            console.log('Nombre de produits dans le LS :  ', productInStorage.length);
+                totalPriceItem.textContent = totalPrice;
+                console.log('total', productInStorage[i].quantity * productInStorage[i].price);
+    
+                console.log('Nombre de produits dans le LS :  ', productInStorage.length);
+            }
+        }
+        else
+        {
+            totalPriceItem.textContent = "0";
 
         }
   };
-
   showFinalPrice();
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +315,9 @@ btn_order.addEventListener("click", (e) =>
         {
         first_name_error.innerHTML = "";
         return true;
-        } else {
+        } 
+        else 
+        {
         first_name_error.innerHTML =
             "Le prénom doit avoir 3 lettres minimum et pas de caractères spéciaux ou chiffres";
         return false;
@@ -327,7 +332,8 @@ btn_order.addEventListener("click", (e) =>
         {
             last_name_error.innerHTML = "";
             return true;
-        } else 
+        } 
+        else 
         {
             last_name_error.innerHTML =
             "Le nom doit avoir 3 lettres minimum et pas de caractères spéciaux ou chiffres";
@@ -343,7 +349,8 @@ btn_order.addEventListener("click", (e) =>
         {
             address_error.innerHTML = "";
             return true;
-        } else 
+        } 
+        else 
         {
             address_error.innerHTML =
             "Merci de renseigner votre adresse d'au maximum 50 caractères et débutant par des chiffres";
@@ -359,7 +366,8 @@ btn_order.addEventListener("click", (e) =>
         {
         city_error.innerHTML = "";
         return true;
-        } else 
+        } 
+        else 
         {
         city_error.innerHTML = `Merci de renseigner votre ville et votre code postal. Exemple : « Paris 00000 »`;
         return false;
@@ -374,7 +382,8 @@ btn_order.addEventListener("click", (e) =>
         {
         e_mail_error.innerHTML = "";
         return true;
-        } else 
+        } 
+        else 
         {
         e_mail_error.innerHTML =
             "E-mail non valide. Il doit contenir un @ et un point suivi d'au maximum 3 lettres";
@@ -388,7 +397,8 @@ btn_order.addEventListener("click", (e) =>
             adress_valid = addressControl(),
             city_valid = cityControl(),
             email_valid = emailControl();
-        if (
+        if 
+        (
             !firstname_valid ||
             !lastname_valid ||
             !adress_valid ||
@@ -407,31 +417,33 @@ btn_order.addEventListener("click", (e) =>
     }
 
   // Envoie de l'objet order vers le serveur
-  fetch("http://localhost:3000/api/products/order", 
-  {
-    method: "POST",
-    headers: 
+  fetch("http://localhost:3000/api/products/order",
     {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(
+            method: "POST",
+            headers: 
+            {
+            "Content-Type": "application/json",
+            },
+                body: JSON.stringify
+                    (
+                    {
+                        contact: FORM_VALUE,
+                        products: products,
+                    }),
+    })
+        .then(async (response) => 
         {
-            contact: FORM_VALUE,
-            products: products,
-        }),
-    }).then(async (response) => 
-    {
-        try 
-        {
-        const POST_ORDER = await response.json();
-        let orderId = POST_ORDER.orderId;
+            try 
+            {
+            const POST_ORDER = await response.json();
+            let orderId = POST_ORDER.orderId;
 
-        // Clear le localStorage
-        localStorage.clear();
-        window.location.assign("confirmation.html?id=" + orderId);
-        } catch (e) 
-        {
-        console.log(e);
-        }
-    });
+            // Clear le localStorage
+            localStorage.clear();
+            window.location.assign("confirmation.html?id=" + orderId);
+            } catch (e) 
+            {
+            console.log(e);
+            }
+        });
 });

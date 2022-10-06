@@ -11,7 +11,7 @@ fetch ("http://localhost:3000/api/products")
     function displayProducts(products){
 
         //je crée une boucle
-        console.log(products);
+      
         for (let i = 0; i < products.length; i++) {
       
             //on attribut le lien à chaque id
@@ -42,7 +42,6 @@ fetch ("http://localhost:3000/api/products")
 
 
             productLink.appendChild(productArticle);
-            console.log(productLink);
             productsList.appendChild(productLink);
 
         }
